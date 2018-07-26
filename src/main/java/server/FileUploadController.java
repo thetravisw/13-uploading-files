@@ -50,22 +50,52 @@ public class FileUploadController {
 
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
-            Model model) {
+                                   Model model) {
         try {
             storageService.store(file);
             InputStream inputSteam = file.getInputStream();
             Scanner scanner = new Scanner(inputSteam);
 
             int words = 0;
+            int sentences =0;
+            int letters = 0;
             while (scanner.hasNext()) {
-                scanner.next();
+                String word = scanner.next();
                 words++;
+                if (word.endsWith(".") || word.endsWith("?") || word.endsWith("!")) {
+                    sentences++;
+                }
+                letters += word.length();
+            }
+            if (sentences==0) sentences++;
+            double syllables = letters/3;
+            double score = 0.39*(words/sentences) + 11.8*(syllables/words);
+            String level;
+            if (score < 30){
+                level = "College graduate.";
+            } else if (score <50){
+                level = "College student.";
+            } else if (score < 60) {
+                level = "11th grade.";
+            } else if (score < 70){
+                level = "9th grade.";
+            } else if (score <80){
+                level = "7th grade.";
+            } else if (score < 90){
+                level = "6th grade";
+            } else {
+                level = "'yousa dum dum Ani.' ~~~ Jar-Jar Binks";
             }
             model.addAttribute("words", words);
+            model.addAttribute("level", level);
+
             return "word-count";
         } catch (IOException e) {
 
         }
+
         return "redirect:/";
     }
 }
+
+
