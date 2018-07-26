@@ -9,9 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import server.storage.StorageFileNotFoundException;
-import server.storage.StorageService;
+import server.storage.FileSystemStorageService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,14 +19,14 @@ import java.util.stream.Collectors;
 @Controller
 public class FileUploadController {
 
-    private final StorageService storageService;
+    private final FileSystemStorageService storageService;
 
     @Autowired
-    public FileUploadController(StorageService storageService) {
+    public FileUploadController(FileSystemStorageService storageService) {
         this.storageService = storageService;
     }
 
-    @GetMapping("/upload")
+    @GetMapping("/")
     public String listUploadedFiles(Model model) throws IOException {
         model.addAttribute("files", storageService.loadAll().map(
                 path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
@@ -41,18 +39,20 @@ public class FileUploadController {
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
-        Resource file = storageService.loadAsResource(filename);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        try {
+            Resource file = storageService.loadAsResource(filename);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+        } catch (IOException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
             Model model) {
-        storageService.store(file);
-
         try {
+            storageService.store(file);
             InputStream inputSteam = file.getInputStream();
             Scanner scanner = new Scanner(inputSteam);
 
