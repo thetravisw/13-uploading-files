@@ -10,9 +10,6 @@ Create a web server where users can upload `.txt` files. Process the texts
 and show the user the text's readability score. Use the Flesch-Kincaid metric
 to calculate the score.
 
-Ignore the syllable metric for now. Calculate it with just the sentence and
-word counting first.
-
 You may assume the end of sentence is denoted by any token whose last character
 is not a letter.
 
