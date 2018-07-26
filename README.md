@@ -20,7 +20,7 @@ Approximate syllable counting by following the following rules:
 * any word five characters or less counts as one syllable
 * all other words divide their length by 2 and round down.
 
-![Flesch-Kincaid formula](grade-level.svg)
+![Flesch-Kincaid formula](./grade-level.svg)
 
 ## Testing  
 * Write small unit tests against known scored small lengths of text.
