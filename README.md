@@ -2,6 +2,7 @@
 
 ## Resources  
 * [Flesch-Kincaid Readability Tests](https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests)
+* [Download public domain texts from Project Gutenberg](https://www.gutenberg.org/)
   
 ## Feature Tasks  
 #### Exercise
@@ -19,7 +20,7 @@ Approximate syllable counting by following the following rules:
 * any word five characters or less counts as one syllable
 * all other words divide their length by 2 and round down.
 
-![Flesch-Kincaid formula](imgs/flesch-kincaid-formula.svg)
+![Flesch-Kincaid formula](grade-level.svg)
 
 ## Testing  
 * Write small unit tests against known scored small lengths of text.
